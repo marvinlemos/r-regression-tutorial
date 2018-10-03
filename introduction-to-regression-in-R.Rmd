@@ -9,26 +9,26 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
+### 1. Introduction
 
-The main objective of this document is to introduce regression techiniques using R programming language. We will use Boston house dataset in this tutorial. A copy of the dataset can be found in '**dataset**' folder.
+The main objective of this document is to introduce regression techiniques using R programming language. We will use Boston house dataset in this tutorial. A copy of the dataset can be found in '**dataset**' the folder. For more information about this dataset, please go to: https://archive.ics.uci.edu/ml/machine-learning-databases/housing/
 
-## Setup
+### 2. Setup
 First, we have to import some required libraries.
 
-```{r}
+```{r, message=FALSE}
 library(ggplot2)
 library(dplyr)
 ```
 
-## Loading the dataset
+### 3. Loading the dataset
 
 
 ```{r pressure}
 houses.df = read.csv('dataset/housing.csv')
 ```
 
-### Data Analysis
+### 4. Data Analysis
 
 Now, let's take a look at the first 6 rows of the dataset:
 ```{r}
@@ -40,44 +40,47 @@ And check the summary of the whole dataset:
 summary(houses.df)
 ```
 
-We can see that all variables are numeric, which is great to perform the analysis. However, be in mind that in real life we usually don't encounter clean dataset like this.
+We can see that all variables are numeric, which is excellent for performing the analysis. However, be in mind that in real life we usually don't encounter clean dataset like this.
 
 
-### Correlation Analysis
+
+### 5. Correlation Analysis
 Correlation is a statistical measure which suggests the level of dependencies between two variables. Its values is always between $-1$ and $1$:
 
 1. Values close to **$-0$** suggest a weak correlation (there is no correlation between the variables);
 2. Values close to **$1$** suggest a strong positive correlation;
-3. Values close to **$1$** suggest a strong negative correlation.
+3. Values close to **$-1$** suggest a strong negative correlation.
 
 In **R**, we can use the *cor(x,y)* function to get the correlation between two variables. For example, let's examine if AGE is somehow correlated to MEDV.
 
 ```{r}
 cor(houses.df$AGE, houses.df$MEDV)
 ```
-There is a negative correlation between AGE and MEDV. However, it is not a strong correlation, once the value is closer to $0$ than $-1$. Maybe we should not use the AGE variable in our predictive model. But we will discuss this later.
+There is a negative correlation between AGE and MEDV. However, it is not a strong correlation, since the value is closer to $0$ than $-1$. Maybe we should not use the AGE variable in our predictive model. But we will discuss this later.
 
-A Scatter plots can help visualize any relationships between the dependent (MEDV) variable and independent (AGE) variables:
+A Scatterplot can help to visualize any relationships between the dependent (MEDV) variable and independent (AGE) variables:
 
 ```{r}
 ggplot(houses.df, aes(AGE, MEDV)) + geom_point()
 ```
 
 
-# Linear Regression
+### 6.Linear Regression
 
-## What is Linear Regression?
+##### 6.1. What is Linear Regression?
 It is a 'generic' term to describe a set of techniques capable of predicting a response (dependent) variable by other variables, called predictors or independent variables. This predicting capability of a regression model is related to the correlations between the dependent and independent variables.
 
-More specifically, we use a linear regression technique to model a continuous variable Y as a mathematical function of one or more X variable(s). Then, we can use this regression model to predict the Y when only the X is known. This mathematical function can be generalized as follows:
+More specifically, we use a linear regression technique to model a continuous variable Y (response) as a mathematical function of one or more X variables (predictors). Then, we can use this regression model to predict the Y when only the X is known. This mathematical function can be generalized as follows:
 
 $$
 \hat{Y} = \beta_1 + \beta_2*X
 $$
 where, $\beta_1$ is the intercept and $\beta_2$ is the slope. They are known as regression coefficients.
 
-## Simple Linear Regression
-First, we will build a model to predict MEDV based only on the AGE. In this case, we are using a simple linear regression. For that, we will use the **lm()** function. The **lm()** function takes in two main arguments: (i) The formula, and (ii) the data. The data is typically a data.frame and the formula is a object of class formula.
+The Boston house dataset is a classical dataset used, in most of the cases, to validate regression models. Usually, we try to predict **MEDV** values based on some of the others variables.
+
+#### 6.2. Simple Linear Regression
+First, we will build a model to predict **MEDV** based only on the **AGE**. In this case, we are using a simple linear regression. For that, we will use the **lm()** function. The **lm()** function takes in two main arguments: (i) The formula, and (ii) the data. The data is typically a data.frame and the formula is a object of class formula.
 
 ```{r}
 linear.model = lm(MEDV ~ AGE, data = houses.df)
@@ -91,16 +94,87 @@ my_coefficients = coefficients(linear.model)
 ```
 
 
-We have just built the linear model and stored in **linear.model variable**. If we print the contend of that variable we will see the values of the 'coefficients': intercept ($\beta_1$) and AGE ($\beta_2$). We can now derive the relationship between the predictor and response in the form of a mathematical formula for MEDV as a function for AGE:
+We have just built the linear model and stored in **linear.model variable**. If we print the contend of that variable we will see the values of the 'coefficients': intercept ($\beta_1$) and AGE ($\beta_2$). We can now derive the relationship between the predictor and response in the form of a mathematical formula for **MEDV** as a function for **AGE**:
 
 $$
 \hat{MEDV} = `r round(my_coefficients[1],3)` `r round(my_coefficients[2],3)` * AGE
 $$
 
-## Linear Regression Diagnostics
+
+#### 6.2.1. Drawing the regression line in the scatter plot
+
+```{r}
+ggplot(houses.df, aes(AGE, MEDV)) + 
+  geom_point() + 
+  geom_smooth(method = lm)
+```
+
+The regression line shows what we have imagined: There is little negative correlation between AGE and MEDV. MEDV decrease slowly while AGE increase.
+
+#### 6.2.2. Evaluation our model
 Before putting our model into production, it is necessary to perform a diagnosis to evaluate how good is the model to predict new values. For that, the *summary()* function will help:
 
 ```{r}
 summary(linear.model)
 ```
 
+A lot of number here. How to interpretate them? I will not detail everything here in this tutorial. But there is something we can't let escape.
+
+#### 6.2.3. The p-value
+The summary result shows two kinds of **p-values**: one for the model, and another one for each predictor variable (the **Pr(>|t|)** column under 'Coefficients'). These values tell us how significant is a linear model. By the book, a good model or predictor is statistically significant when its **p-value** is less than a pre-determined threshold (usually $0.05$). Note the stars at the end of the row in the Coefficients table. It is a visual indication of the significance: the more the stars beside the variable’s **p-Value**, the more significant the variable.
+
+#### 6.2.4 The R-Squared and R-Squared Adjusted
+The multiple R-squared ($0.1421$) indicates that the model accounts for $14.21%$ of the variance in the data.
+
+#### 6.2.5 The Residual standard error
+The residual standard error ($8.527$) represents the average error in predicting MEDV from AGE using our model.
+
+
+
+#### 6.3. Multiple Linear Regression
+A model that explains only $14.21%$ of the variance in the data used to train the model is not a good choice. Therefore, we need to find out something better. We could try using other predictor variables, but usually, the most common approach is trying several variables at the same time. In that way, we now have a Multiple Linear Regression.
+
+In R, we also use the *lm()* function to create Multiple Linear Models. In the next example, let's try to add **RM** variable, which indicates the numbers of rooms in the house. But first, let's check its correlation with **MEDV**:
+
+```{r}
+cor(houses.df$RM, houses.df$MEDV)
+
+ggplot(houses.df, aes(RM, MEDV)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+```
+
+In fact, **RM** seems a good choice. Let's now build our multiple linear model:
+
+```{r}
+mlinear.model = lm(MEDV ~ AGE + RM, data = houses.df)
+
+summary(mlinear.model)
+```
+
+There are several interesting things now. First, the residual error decreased. Also, our **R-squared** is now $0.53$, which means that our new model explains $53%$ of the variance in the data. We can also infer the both AGE and RM are statistcial signicant.
+
+It seems that adding a new variable was a good move. However, this does not mean that I should use all the variables. Let's build a new model using all variables and see what we can get:
+
+```{r}
+
+mlinear02.model = lm(MEDV ~ ., data = houses.df)
+
+summary(mlinear02.model)
+
+```
+Notice that our metrics seems better now. However, the **p-values** of the variables show that not all are statistically significant. In fact, **AGE** is not significant anymore, once its **p-value** is higher than 0.05. In other words, if we remove all the variables not substantial, we could still have a good model but much simpler (since we have less variable). Let's check if our intuition is correct:
+
+```{r}
+mlinear03.model = lm(MEDV ~ CRIM + ZN + CH + NOX + RM + DIS + R + TAX + PRAT + B + LSTAT, data = houses.df)
+
+
+summary(mlinear03.model)
+```
+
+Our new model seems a little better than the previous one.
+
+At the end, we a model multiple linear model that explains $74.06%$ of the variance. We could try others strategies to outcome the performance, but it is not on the scope of this tutorial.
+
+See you later.
