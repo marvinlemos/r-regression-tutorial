@@ -1,0 +1,106 @@
+---
+title: "A gentle introduction to Regression in R"
+author: "Marvin Lemos (marvinlemos@gmail.com)"
+date: "10/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+The main objective of this document is to introduce regression techiniques using R programming language. We will use Boston house dataset in this tutorial. A copy of the dataset can be found in '**dataset**' folder.
+
+## Setup
+First, we have to import some required libraries.
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+## Loading the dataset
+
+
+```{r pressure}
+houses.df = read.csv('dataset/housing.csv')
+```
+
+### Data Analysis
+
+Now, let's take a look at the first 6 rows of the dataset:
+```{r}
+head(houses.df)
+```
+
+And check the summary of the whole dataset:
+```{r}
+summary(houses.df)
+```
+
+We can see that all variables are numeric, which is great to perform the analysis. However, be in mind that in real life we usually don't encounter clean dataset like this.
+
+
+### Correlation Analysis
+Correlation is a statistical measure which suggests the level of dependencies between two variables. Its values is always between $-1$ and $1$:
+
+1. Values close to **$-0$** suggest a weak correlation (there is no correlation between the variables);
+2. Values close to **$1$** suggest a strong positive correlation;
+3. Values close to **$1$** suggest a strong negative correlation.
+
+In **R**, we can use the *cor(x,y)* function to get the correlation between two variables. For example, let's examine if AGE is somehow correlated to MEDV.
+
+```{r}
+cor(houses.df$AGE, houses.df$MEDV)
+```
+There is a negative correlation between AGE and MEDV. However, it is not a strong correlation, once the value is closer to $0$ than $-1$. Maybe we should not use the AGE variable in our predictive model. But we will discuss this later.
+
+A Scatter plots can help visualize any relationships between the dependent (MEDV) variable and independent (AGE) variables:
+
+```{r}
+ggplot(houses.df, aes(AGE, MEDV)) + geom_point()
+```
+
+
+# Linear Regression
+
+## What is Linear Regression?
+It is a 'generic' term to describe a set of techniques capable of predicting a response (dependent) variable by other variables, called predictors or independent variables. This predicting capability of a regression model is related to the correlations between the dependent and independent variables.
+
+More specifically, we use a linear regression technique to model a continuous variable Y as a mathematical function of one or more X variable(s). Then, we can use this regression model to predict the Y when only the X is known. This mathematical function can be generalized as follows:
+
+$$
+\hat{Y} = \beta_1 + \beta_2*X
+$$
+where, $\beta_1$ is the intercept and $\beta_2$ is the slope. They are known as regression coefficients.
+
+## Simple Linear Regression
+First, we will build a model to predict MEDV based only on the AGE. In this case, we are using a simple linear regression. For that, we will use the **lm()** function. The **lm()** function takes in two main arguments: (i) The formula, and (ii) the data. The data is typically a data.frame and the formula is a object of class formula.
+
+```{r}
+linear.model = lm(MEDV ~ AGE, data = houses.df)
+print(linear.model)
+```
+
+```{r, echo=FALSE}
+
+my_coefficients = coefficients(linear.model)
+
+```
+
+
+We have just built the linear model and stored in **linear.model variable**. If we print the contend of that variable we will see the values of the 'coefficients': intercept ($\beta_1$) and AGE ($\beta_2$). We can now derive the relationship between the predictor and response in the form of a mathematical formula for MEDV as a function for AGE:
+
+$$
+\hat{MEDV} = `r round(my_coefficients[1],3)` `r round(my_coefficients[2],3)` * AGE
+$$
+
+## Linear Regression Diagnostics
+Before putting our model into production, it is necessary to perform a diagnosis to evaluate how good is the model to predict new values. For that, the *summary()* function will help:
+
+```{r}
+summary(linear.model)
+```
+
