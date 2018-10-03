@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### 1. Introduction
 
-The main objective of this document is to introduce regression techiniques using R programming language. We will use Boston house dataset in this tutorial. A copy of the dataset can be found in '**dataset**' the folder. For more information about this dataset, please go to: https://archive.ics.uci.edu/ml/machine-learning-databases/housing/
+The main objective of this document is to introduce regression techniques using R programming language. We will use Boston house dataset in this tutorial. A copy of the dataset can be found in '**dataset**' the folder. For more information about this dataset, please go to: https://archive.ics.uci.edu/ml/machine-learning-databases/housing/
 
 ### 2. Setup
 First, we have to import some required libraries.
@@ -124,7 +124,7 @@ A lot of number here. How to interpretate them? I will not detail everything her
 The summary result shows two kinds of **p-values**: one for the model, and another one for each predictor variable (the **Pr(>|t|)** column under 'Coefficients'). These values tell us how significant is a linear model. By the book, a good model or predictor is statistically significant when its **p-value** is less than a pre-determined threshold (usually $0.05$). Note the stars at the end of the row in the Coefficients table. It is a visual indication of the significance: the more the stars beside the variable’s **p-Value**, the more significant the variable.
 
 #### 6.2.4 The R-Squared and R-Squared Adjusted
-The multiple R-squared ($0.1421$) indicates that the model accounts for $14.21%$ of the variance in the data.
+The multiple R-squared ($0.1421$) indicates that the model accounts for $14.21\%$ of the variance in the data.
 
 #### 6.2.5 The Residual standard error
 The residual standard error ($8.527$) represents the average error in predicting MEDV from AGE using our model.
@@ -132,7 +132,7 @@ The residual standard error ($8.527$) represents the average error in predicting
 
 
 #### 6.3. Multiple Linear Regression
-A model that explains only $14.21%$ of the variance in the data used to train the model is not a good choice. Therefore, we need to find out something better. We could try using other predictor variables, but usually, the most common approach is trying several variables at the same time. In that way, we now have a Multiple Linear Regression.
+A model that explains only $14.21\%$ of the variance in the data used to train the model is not a good choice. Therefore, we need to find out something better. We could try using other predictor variables, but usually, the most common approach is trying several variables at the same time. In that way, we now have a Multiple Linear Regression.
 
 In R, we also use the *lm()* function to create Multiple Linear Models. In the next example, let's try to add **RM** variable, which indicates the numbers of rooms in the house. But first, let's check its correlation with **MEDV**:
 
@@ -153,7 +153,7 @@ mlinear.model = lm(MEDV ~ AGE + RM, data = houses.df)
 summary(mlinear.model)
 ```
 
-There are several interesting things now. First, the residual error decreased. Also, our **R-squared** is now $0.53$, which means that our new model explains $53%$ of the variance in the data. We can also infer the both AGE and RM are statistcial signicant.
+There are several interesting things now. First, the residual error decreased. Also, our **R-squared** is now $0.53$, which means that our new model explains $53\%$ of the variance in the data. We can also infer the both AGE and RM are statistcial signicant.
 
 It seems that adding a new variable was a good move. However, this does not mean that I should use all the variables. Let's build a new model using all variables and see what we can get:
 
@@ -164,7 +164,7 @@ mlinear02.model = lm(MEDV ~ ., data = houses.df)
 summary(mlinear02.model)
 
 ```
-Notice that our metrics seems better now. However, the **p-values** of the variables show that not all are statistically significant. In fact, **AGE** is not significant anymore, once its **p-value** is higher than 0.05. In other words, if we remove all the variables not substantial, we could still have a good model but much simpler (since we have less variable). Let's check if our intuition is correct:
+Notice that our metrics seems better now. However, the **p-values** of the variables show that not all are statistically significant. In fact, **AGE** is not significant anymore, once its **p-value** is higher than $0.05$. In other words, if we remove all the variables not substantial, we could still have a good model but much simpler (since we have less variable). Let's check if our intuition is correct:
 
 ```{r}
 mlinear03.model = lm(MEDV ~ CRIM + ZN + CH + NOX + RM + DIS + R + TAX + PRAT + B + LSTAT, data = houses.df)
@@ -175,6 +175,6 @@ summary(mlinear03.model)
 
 Our new model seems a little better than the previous one.
 
-At the end, we a model multiple linear model that explains $74.06%$ of the variance. We could try others strategies to outcome the performance, but it is not on the scope of this tutorial.
+At the end, we a model multiple linear model that explains $74.06\%$ of the variance. We could try others strategies to outcome the performance, but it is not on the scope of this tutorial.
 
 See you later.
