@@ -130,7 +130,7 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level3">
 <h3>1. Introduction</h3>
-<p>The main objective of this document is to introduce regression techiniques using R programming language. We will use Boston house dataset in this tutorial. A copy of the dataset can be found in ‘<strong>dataset</strong>’ the folder. For more information about this dataset, please go to: <a href="https://archive.ics.uci.edu/ml/machine-learning-databases/housing/" class="uri">https://archive.ics.uci.edu/ml/machine-learning-databases/housing/</a></p>
+<p>The main objective of this document is to introduce regression techniques using R programming language. We will use Boston house dataset in this tutorial. A copy of the dataset can be found in ‘<strong>dataset</strong>’ the folder. For more information about this dataset, please go to: <a href="https://archive.ics.uci.edu/ml/machine-learning-databases/housing/" class="uri">https://archive.ics.uci.edu/ml/machine-learning-databases/housing/</a></p>
 </div>
 <div id="setup" class="section level3">
 <h3>2. Setup</h3>
@@ -267,7 +267,7 @@ print(linear.model)</code></pre>
 </div>
 <div id="the-r-squared-and-r-squared-adjusted" class="section level4">
 <h4>6.2.4 The R-Squared and R-Squared Adjusted</h4>
-<p>The multiple R-squared (<span class="math inline">\(0.1421\)</span>) indicates that the model accounts for <span class="math inline">\(14.21%\)</span> of the variance in the data.</p>
+<p>The multiple R-squared (<span class="math inline">\(0.1421\)</span>) indicates that the model accounts for <span class="math inline">\(14.21\%\)</span> of the variance in the data.</p>
 </div>
 <div id="the-residual-standard-error" class="section level4">
 <h4>6.2.5 The Residual standard error</h4>
@@ -275,7 +275,7 @@ print(linear.model)</code></pre>
 </div>
 <div id="multiple-linear-regression" class="section level4">
 <h4>6.3. Multiple Linear Regression</h4>
-<p>A model that explains only <span class="math inline">\(14.21%\)</span> of the variance in the data used to train the model is not a good choice. Therefore, we need to find out something better. We could try using other predictor variables, but usually, the most common approach is trying several variables at the same time. In that way, we now have a Multiple Linear Regression.</p>
+<p>A model that explains only <span class="math inline">\(14.21\%\)</span> of the variance in the data used to train the model is not a good choice. Therefore, we need to find out something better. We could try using other predictor variables, but usually, the most common approach is trying several variables at the same time. In that way, we now have a Multiple Linear Regression.</p>
 <p>In R, we also use the <em>lm()</em> function to create Multiple Linear Models. In the next example, let’s try to add <strong>RM</strong> variable, which indicates the numbers of rooms in the house. But first, let’s check its correlation with <strong>MEDV</strong>:</p>
 <pre class="r"><code>cor(houses.df$RM, houses.df$MEDV)</code></pre>
 <pre><code>## [1] 0.6953599</code></pre>
@@ -306,7 +306,7 @@ summary(mlinear.model)</code></pre>
 ## Residual standard error: 6.316 on 503 degrees of freedom
 ## Multiple R-squared:  0.5303, Adjusted R-squared:  0.5284 
 ## F-statistic: 283.9 on 2 and 503 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>There are several interesting things now. First, the residual error decreased. Also, our <strong>R-squared</strong> is now <span class="math inline">\(0.53\)</span>, which means that our new model explains <span class="math inline">\(53%\)</span> of the variance in the data. We can also infer the both AGE and RM are statistcial signicant.</p>
+<p>There are several interesting things now. First, the residual error decreased. Also, our <strong>R-squared</strong> is now <span class="math inline">\(0.53\)</span>, which means that our new model explains <span class="math inline">\(53\%\)</span> of the variance in the data. We can also infer the both AGE and RM are statistcial signicant.</p>
 <p>It seems that adding a new variable was a good move. However, this does not mean that I should use all the variables. Let’s build a new model using all variables and see what we can get:</p>
 <pre class="r"><code>mlinear02.model = lm(MEDV ~ ., data = houses.df)
 
@@ -341,7 +341,7 @@ summary(mlinear02.model)</code></pre>
 ## Residual standard error: 4.745 on 492 degrees of freedom
 ## Multiple R-squared:  0.7406, Adjusted R-squared:  0.7338 
 ## F-statistic: 108.1 on 13 and 492 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Notice that our metrics seems better now. However, the <strong>p-values</strong> of the variables show that not all are statistically significant. In fact, <strong>AGE</strong> is not significant anymore, once its <strong>p-value</strong> is higher than 0.05. In other words, if we remove all the variables not substantial, we could still have a good model but much simpler (since we have less variable). Let’s check if our intuition is correct:</p>
+<p>Notice that our metrics seems better now. However, the <strong>p-values</strong> of the variables show that not all are statistically significant. In fact, <strong>AGE</strong> is not significant anymore, once its <strong>p-value</strong> is higher than <span class="math inline">\(0.05\)</span>. In other words, if we remove all the variables not substantial, we could still have a good model but much simpler (since we have less variable). Let’s check if our intuition is correct:</p>
 <pre class="r"><code>mlinear03.model = lm(MEDV ~ CRIM + ZN + CH + NOX + RM + DIS + R + TAX + PRAT + B + LSTAT, data = houses.df)
 
 
@@ -376,7 +376,7 @@ summary(mlinear03.model)</code></pre>
 ## Multiple R-squared:  0.7406, Adjusted R-squared:  0.7348 
 ## F-statistic: 128.2 on 11 and 494 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>Our new model seems a little better than the previous one.</p>
-<p>At the end, we a model multiple linear model that explains <span class="math inline">\(74.06%\)</span> of the variance. We could try others strategies to outcome the performance, but it is not on the scope of this tutorial.</p>
+<p>At the end, we a model multiple linear model that explains <span class="math inline">\(74.06\%\)</span> of the variance. We could try others strategies to outcome the performance, but it is not on the scope of this tutorial.</p>
 <p>See you later.</p>
 </div>
 </div>

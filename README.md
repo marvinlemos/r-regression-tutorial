@@ -1,5 +1,5 @@
 # r-regression-tutorial
 
-This a step-by-step guide to linear regression using R programming language.
+This project shares some tutorials about linear regression using R programming language.
 
-The online tutorial can be found [HERE](http://rpubs.com/marvinlemos/regression-tutorial).
+The online tutorials can be found [HERE](http://rpubs.com/marvinlemos).

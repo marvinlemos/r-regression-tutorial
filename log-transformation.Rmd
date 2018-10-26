@@ -1,0 +1,93 @@
+---
+title: "A hands-on tutorial about Log Transformations using R language"
+author: "Marvin Lemos"
+date: "24 de outubro de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Importing the necessary libraries for this tutorial:
+```{r, warning=FALSE, message=FALSE}
+library(openintro)
+library(dplyr)
+library(ggplot2)
+library(e1071)
+```
+
+Sometimes, we have to deal with data that don´t have a normal shape but a skewed one. By the book, a negative skewness reveals that the mean of the values is less than the median, which means that the data distribution is left-skewed. A positive skewness suggests that the mean of the data values is larger than the median, and the data distribution is right-skewed. For example, let´s consider the histogram of *BodyWt* and *BodyWt* variables from the *mammals* dataset.
+
+```{r message=FALSE}
+ggplot(data = mammals, aes(BodyWt)) + geom_histogram()
+```
+
+```{r message=FALSE}
+ggplot(data = mammals, aes(BrainWt)) + geom_histogram()
+```
+
+The histplot indicates that both variable are right-skewed. We can check using the function *skewness* from the **e1071** library.
+
+```{r}
+skewness(mammals$BodyWt)
+skewness(mammals$BrainWt)
+
+```
+
+Here are some hints:
+
+- If the skewness of the predictor variable is 0, the data is perfectly symmetrical,
+- If the skewness of the predictor variable is less than -1 or greater than +1, the data is highly skewed,
+- If the skewness of the predictor variable is between -1 and -0.5 or between +1 and +0.5 then the data is moderately skewed,
+- If the skewness of the predictor variable is -0.5 and +0.5, the data is approximately symmetric.
+
+
+Skewed data have a negative impact on linear regression. For example, if we take the scatter-plot of  *BodyWt* and *BrainWt* we will see something very odd.
+
+```{r}
+ggplot(mammals, aes(BodyWt, BrainWt)) + geom_point()
+```
+
+Sometimes there really is no meaningful relationship between the two variables. However, in many situations a simple transformation of one or both of the variables can disclose a clear relationship.
+
+**ggplot2** provides *the scale_x_log10()* and *scale_y_log10()* functions perform a base-10 log transformation of each axis.
+
+```{r}
+# Scatterplot with scale_x_log10() and scale_y_log10()
+ggplot(data = mammals, aes(x = BodyWt, y = BrainWt)) +
+  geom_point() +
+  scale_x_log10() + scale_y_log10()
+```
+
+
+Let's create a linear regression model to predict *BrainWt* based on the *BodyWt* using the raw values from the dataset.
+
+```{r}
+lm.model = lm(BrainWt ~ BodyWt, data = mammals)
+
+```
+
+Now, let's take a look into the summary:
+
+```{r}
+summary(lm.model)
+```
+
+Notice how the residual standard error is too high: 334.7.
+
+Maybe a log-transformation in the values might help us to improve the model. For that, we will use the **log1p** function, which, by default, computes the natural logarithm of a given number or set of numbers.
+
+```{r}
+lm_log.model = lm(log1p(BrainWt) ~ log1p(BodyWt), data = mammals)
+
+```
+
+Now, let's take a look into the summary:
+
+```{r}
+summary(lm_log.model)
+```
+
+
+Our error decreased to 0.79. That's really much better than our previous model.
